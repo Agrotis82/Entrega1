@@ -1,0 +1,216 @@
+{% extends 'appcoder/padre.html' %}
+{% load static %}
+
+{% block ContenidoqCambia %}
+<body>
+    <header class="masthead">
+        <div class="container position-relative">
+            <div class="row justify-content-center">
+                <div class="col-xl-6">
+                    <div class="text-center text-white">
+                        <!-- Page heading-->
+                        <h1 class="mb-5">PEDIDOS</h1>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <h3>Pedidos</h3> 
+    {% if articulo %}
+        <H1>Se agrego correctamente el pedido con el articulo {{articulo}}  </H1>
+    {% endif %}
+       <!-- <p>Ingrese su nuevo pedido</p>
+        <form action="/AppCoder/agregapedido/" method="POST">{% csrf_token %}
+            <p>Cuit <input type="text" name="cuit" placeholder="Ingrese su C.U.I.T."></p>
+            <p>Articulo <input type="text" name="articulo" placeholder="Ingrese articulo"></p>
+            <p>Cantidad <input type="nombre" name="cantidad" placeholder="Ingrese cantidad"> </p>
+            <input type="submit" name="enviar">
+        </form>
+        -->
+
+        <p></p>
+        <p></p>
+        <p></p>
+        <p></p>
+
+
+        
+   <p></p>
+   <p></p>
+    <table>
+        <thead>
+            <tr>
+          
+                <!--<td>Nro Pedido    :</td>-->
+                <td>Fecha    :</td>
+                <!--<td>Cliente    :</td>-->
+                
+                <td>Código Articulo    :</td>
+                <td>Decripción    :</td>
+                <td>Cantidad    :</td>
+                
+                <!--<td>Estado   :</td>
+                <td>Entregado    :</td>-->
+           
+
+           </tr>
+        </thead>
+        <tbody>
+        
+            {% if pedidos_temp %}
+            <p>Pedidos abiertos</p>
+                {% for f  in pedidos_temp  %}
+                <tr>
+                   <!-- {% if f.cerrado %}
+                        <td>{{f.id}}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %} -->
+                    <td>{{f.fecha}}</td>
+                    <!--<td>{{f.idcliente}}</td>-->
+                    {% for d  in articulos %}
+                        {% if f.idarticulo_id == d.id %}
+                            <td>{{d.Codigo}}</td>
+                            <td>{{d.descripcion}}</td>
+                        {% endif %}    
+                    {% endfor %}  
+                    <!--<td>{{f.idarticulo_id}}</td>
+                    {% for d  in articulos %}
+                        {% if f.idarticulo_id == d.id %}
+                            <td>{{d.descripcion}}</td>
+                        {% endif %}    
+                    {% endfor %}    -->    
+                    <td>{{f.cantidad}}</td>
+                    <!--{% if f.cerrado %}
+                        <td>{{f.cerrado}}</td>
+                    {% else %}
+                        <td>"Abierto"</td>
+                    {% endif %} 
+                    
+                    
+                    <td>{{f.entregado}}</td>-->
+              
+
+                {% endfor %}
+                
+                </tr>
+                {% if not user.is_superuser %}
+                
+                    <td><button><a href='{% url "cierrapedido" %}'>Cerrar Pedido</a></button></td>
+                {% endif %}    
+            {% else %}
+                <h1>no hay pedidos abiertos</h1>
+            {% endif %}
+        </tbody>
+        
+    </table>
+    <h3>Pedidos Cerrados</h3> 
+    <table>
+        <thead>
+            <tr>
+          
+                <td>Nro Pedido    :</td>
+               
+                <td>Fecha    :</td>
+               
+                <td>Cliente    :</td>
+
+                <td>Entregado    :</td>
+           
+
+           </tr>
+        </thead>
+
+        
+        <tbody>
+            {% if pedidos %}
+        
+                {% for f  in pedidos  %}
+                    <tr>
+                    {% if f.cerrado %}
+                        <td>{{f.id}}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %} 
+                    <td>{{f.fecha}}</td>
+                    
+                    
+                    {% if user.is_superuser %}
+                        {% for c  in cliente %}
+                            {% if c.id == f.idcliente  %}
+                                <td>{{c.razonsocial}}</td>
+
+                            {% endif %}    
+                        {% endfor %}   
+                    {% endif%}     
+                    <td>{{f.cantidad}}</td>
+                    {% if f.entregado %}
+                        <td>"Entregado"</td>
+                    {% else %}
+                        <td>"Pendiente"</td>
+                    {% endif %}
+                    
+                    
+                    <!--<td>{{f.entregado}}</td>-->
+                    <td> <td><button><a href='{% url "consultapedido" f.id %}'>Consultar Pedido</a></button></td></td>
+
+                    {% endfor %}
+                    </tr>
+            
+            {% else %}
+                <h1>no hay Pedidos cerrados</h1>
+            {% endif %}
+
+                    
+        </tbody>
+        
+    </table>
+
+
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+   <!--
+    <h3>Listado de Productos</h3>
+    <p></p>
+    <p></p>
+        <table>
+            <thead>
+                <tr>
+            
+                    <td>Codigo</td>
+                    <td>Descripcion</td>
+                    <td>Stock</td>
+            
+
+            </tr>
+            </thead>
+            <tbody>
+            
+                {% if productos %}
+            
+                    {% for f  in productos  %}
+                    <tr>
+                        <td>{{f.Codigo}}</td>
+                        <td>{{f.descripcion}}</td>
+                        <td>{{f.stock}}</td>
+                
+
+                    {% endfor %}
+                    </tr>
+                
+            {% else %}
+                <h1>no hay registros</h1>
+            {% endif %}
+                
+        </tbody>
+    </table>
+-->
+
+</body>
+
+{% endblock ContenidoqCambia %}
