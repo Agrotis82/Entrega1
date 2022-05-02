@@ -20,6 +20,11 @@
 
 <body>
 {% if user.is_superuser %}
+    <p></p>
+    <p></p>
+    {{advertencia}}
+    <p></p>
+    <p></p>
     <form method="POST" enctype="multipart/form-data">
     
         {% csrf_token %}

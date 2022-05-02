@@ -11,7 +11,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from pkg_resources import require
 
-from AppCoder.forms import UserEdithForm
+from AppCoder.forms import UserEdithForm, CustomUserForm
 #Import OS para acceder a carpetas 
 import os
 #para las detail, list create y edit view
@@ -528,7 +528,7 @@ def register(request):
 
       if request.method == 'POST':
 
-            form = UserCreationForm(request.POST)
+            form = CustomUserForm(request.POST)
             #form = UserRegisterForm(request.POST)
             if form.is_valid():
 
@@ -542,7 +542,8 @@ def register(request):
                 
                 avatar=Avatar(user_id=id)
                 avatar.save()
-                  
+                #obj=avatar.pk 
+                avatar=Avatar.objects.get(user_id=id)
                 mensaje=(f"Nuevo registro de usuario {username}" )
                 destinatarios=["testpedidos2022@gmail.com"]
                 send_mail(
@@ -553,16 +554,20 @@ def register(request):
                     fail_silently=False
                 )
         #**********************************
-                  
-                  
-                return render(request,"AppCoder/padre.html" ,  {"mensaje":"Usuario Creado :). aguarde a que el administrador le confirme la finalización del alta",})
+                mensaje=(f"Usuario Creado. aguarde a que el administrador le confirme la finalización del alta para el usuario {username}")
+                return render(request,"AppCoder/padre.html" ,  {"mensaje":mensaje,"avatar":avatar})
 
 
       else:
-            form = UserCreationForm()       
+            form = CustomUserForm()       
             #form = UserRegisterForm()     
 
       return render(request,"AppCoder/registro.html" ,  {"form":form})
+
+
+
+
+
 
 
 #-----------------------generapedido1 sin formulario-----
@@ -947,9 +952,16 @@ class clienteDetalle(LoginRequiredMixin, DetailView):
 
 class clienteCreacion(LoginRequiredMixin, CreateView):
 
-      model = Clientes
-      success_url = "/AppCoder/cliente/list"
-      fields = ['razonsocial', 'cuit', 'contacto', 'domicilio', 'usuario']
+    model = Clientes
+    success_url = "/AppCoder/cliente/list"
+    fields = ['razonsocial', 'cuit', 'contacto', 'domicilio', 'usuario']
+    
+    #agrego contexto al formulario para enviar mensaje al html   
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context["advertencia"] = "Advertencia: para poder completar el altra de un nuevo cliente, debera asociarlo a un usuario previamente existente"
+        return context
 
 
 class clienteUpdate(LoginRequiredMixin, UpdateView):
