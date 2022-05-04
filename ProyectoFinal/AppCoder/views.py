@@ -114,11 +114,6 @@ def pedidos( request):
 
         cliente=Clientes.objects.get(usuario_id=usuario)
         idc=cliente.id
-
-    
-    
-        #---- Filtro estado del pedido, abierto o cerrado y filtro por idcliente
-        
         pedidos_temp=Pedido_temp.objects.filter(cerrado=0, idcliente=idc)
      
         #pedidos_temp=Pedido_temp.objects.filter(cerrado=0)
@@ -160,9 +155,18 @@ def agregapedido(request):
  
 @login_required
 def productos(request):
+    cliente=Clientes.objects.get(usuario_id=request.user.id)
+    idc=cliente.id
+    pedidos_temp=Pedido_temp.objects.filter(cerrado=0, idcliente=idc)
 
-            articulos=Articulos.objects.filter(habilitado=True)
-            return render(request,"AppCoder/productos.html",{"productos":articulos})
+    articulos=Articulos.objects.filter(habilitado=True)
+
+    for a in articulos:
+        for p in pedidos_temp:
+            if a.id == p.idarticulo_id:
+                a.cantidad = p.cantidad
+     
+    return render(request,"AppCoder/productos.html",{"productos":articulos, "pedidos_tmp":pedidos_temp})
 
 
 def buscar(request):
@@ -181,14 +185,10 @@ def buscar(request):
 
       #No olvidar from django.http import HttpResponse
 
-def savePedido(usuario, codigo, cantidad):    
-        
+def savePedido(clienteid, codigo, cantidad):    
         codigo_art=Articulos.objects.filter(Codigo=codigo)
         id_cod=codigo_art.values_list('pk', flat=True)
         artdescripcion=codigo_art.values_list("descripcion")
-        
-        cliente=Clientes.objects.filter(usuario_id=usuario)
-        clienteid=cliente.values("id")
         fecha=datetime.now()
         pedido=Pedido_temp(idcliente=clienteid, idarticulo_id=id_cod,cantidad=cantidad, fecha=fecha)
         pedido.save()
@@ -202,19 +202,17 @@ def generapedido(request):
         userId = request.user.id
         output = []
         i = 0
+
+        cliente=Clientes.objects.get(usuario_id=userId)
         
-        try:
-            cliente=Clientes.objects.get(usuario_id=userId)
-        except:
-            output.append("Error: Este usuario no puede generar pedidos o no tiene una empresa asignada")
-            
-        if len(output) == 0:
-            while i < len(codigos):
-                if len(cantidades[i]) > 0:
-                    rta = savePedido(userId, codigos[i], cantidades[i])
-                    if rta['status'] == "ok":
-                        output.append(rta['description'])
-                i = i + 1
+        Pedido_temp.objects.filter(cerrado=False,idcliente=cliente.id).delete()
+        
+        while i < len(codigos):
+            if len(cantidades[i]) > 0 and int(cantidades[i]) > 0:
+                rta = savePedido(cliente.id, codigos[i], cantidades[i])
+                if rta['status'] == "ok":
+                    output.append(rta['description'])
+            i = i + 1
 
         if len(output) == 0:
             output.append("No se generaron pedidos")

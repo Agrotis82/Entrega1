@@ -27,28 +27,30 @@
         
    <p></p>
    <p></p>
-    <h2>Consulta de pedidos</h2> 
+    <h3>Consulta de pedidos</h3> 
     
-    <h3>Pedido Nro:{{pedidos.id}} Fecha: {{pedidos.fecha}} cliente:{{cliente.razonsocial}}</h3>
-                        {% if pedidos.entregado %}
-                            <td>{{pedidos.entregado}}</td>
-                        {% else %}
-                            <td>"estado pendiente"</td>
-                        {% endif %}
-                
+    <ul>
+        <li><b>Pedido Nro:</b>{{pedidos.id}}</li>
+        <li><b>Fecha:</b> {{pedidos.fecha}} cliente:{{cliente.razonsocial}}</li>
+        <li><b>Estado:</b> {% if pedidos.entregado %}
+            {{pedidos.entregado}}
+        {% else %}
+            "Pendiente"
+        {% endif %}</li>
+    </ul>            
                     
             
     
                     
 
-    <table>
+    <table class="table">
         <thead>
             <tr>
           
                 
-                <td>codigo Articulo    :</td>
-                <td>Decripcion    :</td>
-                <td>Cantidad    :</td>
+                <th>codigo Articulo</th>
+                <th>Decripcion   </th>
+                <th>Cantidad    </th>
                 
            
 
@@ -99,7 +101,7 @@
         <input type="submit" name="Agregar">
     </form>
     {% endif %} 
-    <td><button><a href='{% url "pedidos" %}'>volver</a></button></td>  
+    <td><a href='{% url "pedidos" %}' class="btn btn-sm btn-primary">volver</a></td>  
 
 
 

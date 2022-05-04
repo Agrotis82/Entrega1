@@ -18,14 +18,17 @@
         </div>
     </header>
 
-    <h3>Pedidos</h3> 
-    <H1>Se agregaron correctamente los siguientes articulos </H1>
+    <h3>Confirmación pedido</h3> 
+    <H6>Se agregaron correctamente los siguientes articulos </H6>
     <ul>
     {% for producto in productos %}
         <li>{{ producto }}</li>
     {% endfor %}
     </ul>
-    <td><button><a href='{% url "productos" %}'>volver</a></button></td>
+    <div>
+        <a href='{% url "productos" %}' class="btn btn-sm btn-primary">volver</a>
+        <a href='{% url "pedidos" %}' class="btn btn-sm btn-success">ir a listado de pedidos</a>
+    </div>
    
     
 

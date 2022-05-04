@@ -21,7 +21,7 @@
     <p>Modificar los datos de : {{user.username}}</p>
     <form action="" method="POST">{% csrf_token %}
         {{miFormulario.as_p}}
-        <button type="submit">Enviar</button> 
+        <button type="submit" class="btn btn-sm btn-success">Enviar</button> 
     </form>
 
 </body>

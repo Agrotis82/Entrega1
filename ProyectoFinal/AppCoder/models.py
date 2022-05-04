@@ -17,8 +17,9 @@ class Articulos(models.Model):
    desc_extendida=models.CharField("descripcion", max_length=250, null=True, blank=True)
    habilitado=models.BooleanField(default=True)
    image = models.ImageField(upload_to='images', null=True, blank=True, default="images/engranaje.jpg")
+   cantidad = 0
    def __str__(self) -> str:
-      return f"{self.Codigo} {self.descripcion} {self.stock} {self.habilitado} {self.image}"
+      return f"{self.Codigo} {self.descripcion} {self.stock} {self.habilitado} {self.image} {self.desc_extendida} {self.cantidad}"
 
 
 class Clientes(models.Model):
@@ -54,7 +55,7 @@ class Pedido_temp(models.Model):
    cantidad=models.IntegerField("cantidad", default="0")
    cerrado=models.BooleanField(default=False)
    #idarticulo = models.ForeignKey(Articulos)
-   idarticulo = models.ForeignKey(Articulos, on_delete=models.PROTECT)
+   #idarticulo = models.ForeignKey(Articulos, on_delete=models.PROTECT)
    fecha=models.DateField("fecha")
 
 class Avatar(models.Model):

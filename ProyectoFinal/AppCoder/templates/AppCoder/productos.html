@@ -17,96 +17,73 @@
             </div>
         </div>
     </header>
+
+    {% if codigo %}
+        <H1>Se agrego correctamente el producto {{descripcion}} con el codigo {{codigo}} </H1>
+    {% endif %}
+
+    {% if user.is_superuser  %}
+        <!--<button><a href='{% url "importar" %}'>Importar articulos</a></button>-->
+        <button><a href='{% url "uploadFile" %}'>Importar articulos de Media</a></button>
+    {% endif %}
+
+    <h3 style="margin: 5px;">Listado de Productos</h3>
+
+    <div style="text-align: center;">
+        <form action="/AppCoder/busquedaarticulos/" method="get">
+            <input type="text" name="articulo" >
+            <input type="submit" value="buscar" class="btn btn-sm btn-primary" style="color:#000;">
+        </form>
+    </div>
     
-        {% if codigo %}
-            <H1>Se agrego correctamente el producto {{descripcion}} con el codigo {{codigo}} </H1>
-        {% endif %}
-
-        {% if user.is_superuser  %}
-            <!--<button><a href='{% url "importar" %}'>Importar articulos</a></button>-->
-            <button><a href='{% url "uploadFile" %}'>Importar articulos de Media</a></button>
-        {% endif %}
-
-        <h3 style="margin: 5px;">Listado de Productos</h3>
-
-        <div style="text-align: center;">
-            <form action="/AppCoder/busquedaarticulos/" method="get">
-                <input type="text" name="articulo" >
-                <input type="submit" value="buscar" class="btn btn-sm btn-primary" style="color:#000;">
-            </form>
-        </div>
-        
-        <form action="/AppCoder/generapedido/" method="POST">{% csrf_token %}
-            <table class="table">
-                <thead>
+    <form id="form-generapedido" action="/AppCoder/generapedido/" method="POST">{% csrf_token %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Codigo    </th>
+                    <th>Descripcion    </th>
+                    <th>Descripcion Extendida   </th>
+                    <th>Stock Disponible    </th>
+                    <th><input type="Submit" id="btn-generapedido" value="Enviar Pedido" class="btn btn-sm btn-success generapedido"></th>
+            </tr>
+            </thead>
+            <tbody>
+                {% if productos %}
+                    {% for f  in productos  %}
                     <tr>
-                
-                        <th>Imagen</th>
-                        <th>Codigo    </th>
-                        <th>Descripcion    </th>
-                        <th>Descripcion Extendida   </th>
-                        <th>Stock Disponible    </th>
-                        <th><input type="Submit" value= "Enviar Pedido" class="btn btn-sm btn-success"></th>
-
-                </tr>
-                </thead>
-                <tbody>
-                   
-                    {% if productos %}
-                    <h5></h5>
-
-                        {% for f  in productos  %}
-
-                        <tr>
-                            <!-- verifica que el articulo este habilitado. si esta deshabilitado no se muestra-->
-                            {% if f.habilitado %}
-
-                                <!--{% for i  in imagenes  %}  
-                                    {% if i.album_id == f.id %}
-                                        <td><image src="{{i.image.url}}" alt="imagen"></image></td>
-                                    
-                                        
-                                    {% endif%}
-                                {% endfor %}  -->
-                                <td><image src="{{f.image.url}}" alt="imagen" style="width: 20%;"></image></td>
-                                <td>{{f.Codigo}}</td>
-                                <td>{{f.descripcion}}</td>
-                                <td>{{f.desc_extendida}}</td>
-                                <td>{{f.stock}}</td>
-                                {% if user.is_superuser  %}
-                                    <td>{{f.habilitado}}</td>
-                                    <td>
-                                     </td>
-
-
-                                    
-                                {% else %}
-                                    <td><input type='hidden' name='codigo[]' value={{f.Codigo}}>
-                                        <input type="number" min="1" max={{f.stock}} placeholder="Ingrese hasta {{f.stock}} unidades" id="cantidad" name="cantidad[]" style="width: 14em">
-                                        
-                                    </td>
-                                    
-                                {% endif %}
-                               
+                        <!-- verifica que el articulo este habilitado. si esta deshabilitado no se muestra-->
+                        {% if f.habilitado %}
+                            <td><image src="{{f.image.url}}" alt="imagen" style="width: 20%;"></image></td>
+                            <td>{{f.Codigo}}</td>
+                            <td>{{f.descripcion}}</td>
+                            <td>{{f.desc_extendida}}</td>
+                            <td>{{f.stock}}</td>
+                            {% if user.is_superuser  %}
+                                <td>{{f.habilitado}}</td>
+                                <td></td>
+                            {% else %}
+                                <td><input type='hidden' name='codigo[]' value={{f.Codigo}}>
+                                    <input type="number" min="1" max={{f.stock}} value={{f.cantidad}} id="cantidad" name="cantidad[]" style="width: 50px;">
+                                </td>
                             {% endif %}
-                                    
-                        {% endfor %}
-                        </tr>
-                    
-                    {% else %}
-                        <h1>no hay registros</h1>
-                    {% endif %}
-                    
+                        {% endif %}
+                                
+                    {% endfor %}
+                    </tr>
+                
+                {% else %}
+                    <h1>no hay registros</h1>
+                {% endif %}
             </tbody>
         </table>
     </form>
-        <table>
-            <thead>
-                <tr>
-
-                </tr>
-
-            </tbody>
-        </table>
 </body>
+<script>
+    
+    document.getElementById("btn-generapedido").onclick = function() {
+        document.getElementById("form-generapedido").submit();
+    };
+
+</script>
 {% endblock ContenidoqCambia %}
